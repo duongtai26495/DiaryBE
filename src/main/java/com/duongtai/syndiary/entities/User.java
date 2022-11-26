@@ -1,6 +1,8 @@
 package com.duongtai.syndiary.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -37,11 +39,16 @@ public class User {
 
     private int gender;
 
+    @Column(length = 1000)
     private String profile_image;
 
     @ManyToOne()
     @JoinColumn(name = "role", referencedColumnName = "role_id")
     private Role role;
+
+    @OneToMany(targetEntity = Diary.class, mappedBy = "author",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Diary> diaries;
 
     public User() {
     }
@@ -114,7 +121,14 @@ public class User {
         return active;
     }
 
-  
+    public List<Diary> getDiaries() {
+        return diaries;
+    }
+
+    public void setDiaries(List<Diary> diaries) {
+        this.diaries = diaries;
+    }
+
     public void setActive(boolean active) {
 		this.active = active;
 	}
