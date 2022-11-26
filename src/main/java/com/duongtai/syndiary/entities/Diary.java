@@ -24,7 +24,6 @@ public class Diary {
 
     @ManyToOne
     @JoinColumn(name = "author", referencedColumnName = "user_id")
-    @JsonIgnore
     private User author;
 
     @Column(name = "created_at" ,updatable = false)

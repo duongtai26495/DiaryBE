@@ -2,6 +2,8 @@ package com.duongtai.syndiary.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -28,6 +30,9 @@ public class User {
     @Column(name = "username", unique = true)
     private String username;
 
+
+    @JsonIgnore
+    @JsonSetter
     private String password;
 
     @Column(name = "joined_at", updatable = false)
@@ -112,6 +117,7 @@ public class User {
     public String getPassword() {
         return password;
     }
+
 
     public void setPassword(String password) {
         this.password = password;

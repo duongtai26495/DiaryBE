@@ -3,6 +3,7 @@ package com.duongtai.syndiary.services.impl;
 import com.duongtai.syndiary.configs.Snippets;
 import com.duongtai.syndiary.entities.Diary;
 import com.duongtai.syndiary.entities.User;
+import com.duongtai.syndiary.entities.UserDTO;
 import com.duongtai.syndiary.repositories.DiaryRepository;
 import com.duongtai.syndiary.services.DiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,6 @@ public class DiaryServiceImpl implements DiaryService {
         if(diary.isDisplay() != foundDiary.isDisplay()){
             foundDiary.setDisplay(!foundDiary.isDisplay());
         }
-
         if(diary.getImage_url() != null && !diary.getImage_url().equals(foundDiary.getImage_url())){
             foundDiary.setImage_url(diary.getImage_url());
         }
