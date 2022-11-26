@@ -24,6 +24,7 @@ public class DiaryServiceImpl implements DiaryService {
     @Autowired
     private UserServiceImpl userService;
 
+
     @Override
     public Diary saveNewDiary(Diary diary) {
         Date date = new Date();
@@ -35,13 +36,50 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public void deleteDiaryById(Long id) {
-
+    public Diary findDiaryById(Long id) {
+        return diaryRepository.findById(id).get();
     }
 
     @Override
+    public List<Diary> findByAuthor(String username) {
+        List<Diary> foundListDiary = new ArrayList<>();
+        for (Diary diary:diaryRepository.findAll()) {
+            if(diary.getAuthor().getUsername().equalsIgnoreCase(username)){
+                foundListDiary.add(diary);
+            }
+        }
+        return foundListDiary;
+    }
+
+    @Override
+    public void deleteDiaryById(Long id) {
+        diaryRepository.deleteById(id);
+    }
+
+
+    @Override
     public Diary updateDiaryById(Diary diary) {
-        return null;
+        Diary foundDiary = diaryRepository.findById(diary.getId()).get();
+
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
+
+        foundDiary.setLast_edited(sdf.format(date));
+
+        if(diary.isDisplay() != foundDiary.isDisplay()){
+            foundDiary.setDisplay(!foundDiary.isDisplay());
+        }
+
+        if(diary.getImage_url() != null && !diary.getImage_url().equals(foundDiary.getImage_url())){
+            foundDiary.setImage_url(diary.getImage_url());
+        }
+        if(diary.getTitle() != null && !diary.getTitle().equals(foundDiary.getTitle())){
+            foundDiary.setTitle(diary.getTitle());
+        }
+        if(diary.getContent() != null && !diary.getContent().equals(foundDiary.getContent())){
+            foundDiary.setContent(diary.getContent());
+        }
+        return diaryRepository.save(foundDiary);
     }
 
     @Override

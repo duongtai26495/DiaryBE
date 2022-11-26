@@ -39,4 +39,34 @@ public class DiaryController {
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                 new ResponseObject(Snippets.FAILED,Snippets.YOU_DONT_HAVE_PERMISSION, null));
     }
+
+    @PutMapping("update/{id}")
+    public ResponseEntity updateDiary(@PathVariable Long id, @RequestBody Diary diary){
+        if (diaryService.findDiaryById(id).getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
+            diary.setId(id);
+            return  ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(Snippets.SUCCESS,Snippets.DIARY_EDITED,
+                            diaryService.updateDiaryById(diary))
+            );
+        }
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject(Snippets.FAILED,Snippets.YOU_DONT_HAVE_PERMISSION, null));
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity deleteById(@PathVariable Long id){
+        Diary diary = diaryService.findDiaryById(id);
+        if(diary == null){
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject(Snippets.FAILED,Snippets.DIARY_NOT_FOUND, null));
+        }
+        if(diary.getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
+            diaryService.deleteDiaryById(id);
+            return  ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(Snippets.SUCCESS,Snippets.DIARY_DELETED, null)
+            );
+        }
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject(Snippets.FAILED,Snippets.YOU_DONT_HAVE_PERMISSION, null));
+    }
 }
