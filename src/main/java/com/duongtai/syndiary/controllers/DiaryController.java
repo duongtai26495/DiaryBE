@@ -87,4 +87,5 @@ public class DiaryController {
     public Diary getDiaryById (@PathVariable Long id){
         return diaryService.findDiaryById(id);
     }
+
 }

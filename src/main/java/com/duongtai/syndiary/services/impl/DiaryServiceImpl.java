@@ -90,7 +90,17 @@ public class DiaryServiceImpl implements DiaryService {
                displayDiary.add(diary);
             }
         }
-        System.out.println("Return: "+displayDiary.size()+" diary");
         return displayDiary;
+    }
+
+    @Override
+    public List<Diary> getAllDiaryByAuthor() {
+        List<Diary> diaries = new ArrayList<>();
+        for (Diary diary : diaryRepository.findAll()){
+            if(diary.getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
+                diaries.add(diary);
+            }
+        }
+        return diaries;
     }
 }

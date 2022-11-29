@@ -2,6 +2,7 @@ package com.duongtai.syndiary.controllers;
 
 import com.duongtai.syndiary.configs.Snippets;
 import com.duongtai.syndiary.entities.*;
+import com.duongtai.syndiary.services.impl.DiaryServiceImpl;
 import com.duongtai.syndiary.services.impl.StorageServiceImpl;
 import com.duongtai.syndiary.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 import static com.duongtai.syndiary.configs.MyUserDetail.getUsernameLogin;
 
@@ -26,6 +28,9 @@ public class UserController {
 
     @Autowired
     UserServiceImpl userService;
+
+	@Autowired
+	DiaryServiceImpl diaryService;
 
     @GetMapping("profile/{username}")
     public ResponseEntity<ResponseObject> getUserByUsername(@PathVariable String username){
@@ -110,6 +115,19 @@ public class UserController {
         return storageService.readProfileImage(username);
     }
 
+	@GetMapping("all-diary")
+	public List<Diary> getAllDiary (){
+		return diaryService.getAllDiaryByAuthor();
+	}
+
+	@GetMapping("diary/load-to-update/{id}")
+	public Diary getToUpdate (@PathVariable Long id){
+		Diary diary = diaryService.findDiaryById(id);
+		if(diary.getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
+			return diary;
+		}
+		return null;
+	}
 
     @GetMapping("refresh_token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {

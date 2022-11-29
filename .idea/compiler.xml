@@ -7,12 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Application-Sync-Diary" />
+        <module name="DiaryBE" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Application-Sync-Diary" options="-parameters" />
+      <module name="DiaryBE" options="-parameters" />
     </option>
   </component>
 </project>
