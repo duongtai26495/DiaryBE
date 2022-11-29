@@ -9,7 +9,6 @@ public interface DiaryService {
     Diary findDiaryById(Long id);
     void deleteDiaryById(Long id);
     Diary updateDiaryById(Diary diary);
-
     List<Diary> getAllDisplayDiary();
     List<Diary> findByAuthor(String username);
 

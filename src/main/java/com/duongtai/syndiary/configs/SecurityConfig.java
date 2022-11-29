@@ -42,7 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     "/auth/login",
                     "/user/images/**",
                 	"/create_user",
-                    "/images/**").permitAll()
+                    "/images/**",
+                    "/diary/public/*").permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest().permitAll();

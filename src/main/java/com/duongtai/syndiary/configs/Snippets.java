@@ -20,6 +20,8 @@ public class Snippets {
     public static final String NOT_PERMISSION = "You do not permission";
 	public static final String HAVE_ERROR = "Have an error. Try again";
 
+    public static final String STATUS = "status";
+
     //role
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";

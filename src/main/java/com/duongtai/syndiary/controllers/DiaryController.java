@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.duongtai.syndiary.configs.MyUserDetail.getUsernameLogin;
 
 @CrossOrigin
@@ -68,5 +70,21 @@ public class DiaryController {
         }
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                 new ResponseObject(Snippets.FAILED,Snippets.YOU_DONT_HAVE_PERMISSION, null));
+    }
+
+    @GetMapping("author={username}")
+    public ResponseEntity getDiaryByAuthor (@PathVariable String username){
+        if(username.equalsIgnoreCase(getUsernameLogin())){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(Snippets.SUCCESS, Snippets.DIARY_FOUND, diaryService.findByAuthor(username))
+            );
+        }
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject(Snippets.FAILED,Snippets.YOU_DONT_HAVE_PERMISSION, null));
+    }
+
+    @GetMapping("/public/{id}")
+    public Diary getDiaryById (@PathVariable Long id){
+        return diaryService.findDiaryById(id);
     }
 }
