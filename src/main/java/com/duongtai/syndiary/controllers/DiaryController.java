@@ -1,6 +1,7 @@
 package com.duongtai.syndiary.controllers;
 
 import com.duongtai.syndiary.configs.Snippets;
+import com.duongtai.syndiary.entities.Comment;
 import com.duongtai.syndiary.entities.Diary;
 import com.duongtai.syndiary.entities.ResponseObject;
 import com.duongtai.syndiary.entities.User;
@@ -83,9 +84,43 @@ public class DiaryController {
                 new ResponseObject(Snippets.FAILED,Snippets.YOU_DONT_HAVE_PERMISSION, null));
     }
 
-    @GetMapping("/public/{id}")
+    @GetMapping("public/{id}")
     public Diary getDiaryById (@PathVariable Long id){
         return diaryService.findDiaryById(id);
     }
 
+    @GetMapping("comment/{id}")
+    public List<Comment> getAllComment (@PathVariable Long id){
+        return diaryService.loadCommentByDiaryId(id);
+    }
+
+    @PostMapping("comment/add")
+    public ResponseEntity addNewComment (@RequestBody Comment comment){
+        comment.setAuthor(userService.findByUsername(getUsernameLogin()));
+        try {
+            diaryService.addComment(comment);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(Snippets.SUCCESS, Snippets.COMMENT_ADDED, null)
+            );
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject(Snippets.FAILED, String.format(Snippets.ADD_NEW_COMMENT_FAILED,e.getMessage()), null)
+            );
+        }
+    }
+
+    @PutMapping("comment/update")
+    public ResponseEntity updateComment (@RequestBody Comment comment){
+        if(getUsernameLogin().equalsIgnoreCase(comment.getAuthor().getUsername())){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(Snippets.SUCCESS, Snippets.COMMENT_UPDATED, diaryService.updateCommentById(comment))
+            );
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject(Snippets.FAILED, Snippets.UPDATE_COMMENT_FAILED, null)
+            );
+        }
+    }
 }

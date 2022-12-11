@@ -19,9 +19,11 @@ public class Snippets {
     public static final String UPLOAD_IMAGE_SUCCESS = "Upload image success";
     public static final String NOT_PERMISSION = "You do not permission";
 	public static final String HAVE_ERROR = "Have an error. Try again";
-
+    public static final String COMMENT_UPDATED = "Comment updated";
+    public static final String COMMENT_ADDED = "Comment added success";
+    public static final String ADD_NEW_COMMENT_FAILED = "Add new comment failed, error: %s";
     public static final String STATUS = "status";
-
+    public static final String UPDATE_COMMENT_FAILED = "Update failed";
     //role
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";

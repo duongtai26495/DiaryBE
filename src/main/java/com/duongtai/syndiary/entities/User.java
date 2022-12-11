@@ -30,7 +30,6 @@ public class User {
     @Column(name = "username", unique = true)
     private String username;
 
-
     @JsonIgnore
     @JsonSetter
     private String password;
@@ -50,6 +49,10 @@ public class User {
     @ManyToOne()
     @JoinColumn(name = "role", referencedColumnName = "role_id")
     private Role role;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = Comment.class, mappedBy = "author",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
     @OneToMany(targetEntity = Diary.class, mappedBy = "author",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonIgnore
@@ -155,5 +158,11 @@ public class User {
         this.role = role;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
 
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }

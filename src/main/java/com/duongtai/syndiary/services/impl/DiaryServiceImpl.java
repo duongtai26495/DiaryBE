@@ -1,9 +1,11 @@
 package com.duongtai.syndiary.services.impl;
 
 import com.duongtai.syndiary.configs.Snippets;
+import com.duongtai.syndiary.entities.Comment;
 import com.duongtai.syndiary.entities.Diary;
 import com.duongtai.syndiary.entities.User;
 import com.duongtai.syndiary.entities.UserDTO;
+import com.duongtai.syndiary.repositories.CommentRepository;
 import com.duongtai.syndiary.repositories.DiaryRepository;
 import com.duongtai.syndiary.services.DiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class DiaryServiceImpl implements DiaryService {
     @Autowired
     private UserServiceImpl userService;
 
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Override
     public Diary saveNewDiary(Diary diary) {
@@ -53,8 +57,46 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
+    public List<Comment> loadCommentByDiaryId(Long id) {
+       return commentRepository.getAllCommentOfDiary(id);
+    }
+
+    @Override
     public void deleteDiaryById(Long id) {
         diaryRepository.deleteById(id);
+    }
+
+    @Override
+    public void addComment(Comment comment) {
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
+        comment.setCreated_at(sdf.format(date));
+        comment.setLast_edited(sdf.format(date));
+        comment.setDisplay(true);
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public void deleteCommentById(Long id) {
+        Comment comment = commentRepository.findById(id).get();
+        comment.setDisplay(false);
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
+        comment.setLast_edited(sdf.format(date));
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public Comment updateCommentById(Comment comment) {
+        Comment foundComment = commentRepository.findById(comment.getId()).get();
+        if(!comment.getContent().equals(foundComment.getContent())){
+            foundComment.setContent(comment.getContent());
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
+            foundComment.setLast_edited(sdf.format(date));
+            return commentRepository.save(foundComment);
+        }
+        return foundComment;
     }
 
 

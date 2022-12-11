@@ -4,6 +4,7 @@ package com.duongtai.syndiary.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "diary")
@@ -25,6 +26,7 @@ public class Diary {
     @ManyToOne
     @JoinColumn(name = "author", referencedColumnName = "user_id")
     private User author;
+
 
     @Column(name = "created_at" ,updatable = false)
     private String created_at;
@@ -99,4 +101,6 @@ public class Diary {
     public void setDisplay(boolean display) {
         this.display = display;
     }
+
+
 }
