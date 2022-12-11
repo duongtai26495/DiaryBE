@@ -46,6 +46,7 @@ public class UserController {
     	if(user != null){
     		user = userService.saveUser(user);
     		UserDTO userDTO = ConvertEntity.convertToDTO(user);
+			System.out.println("User "+userDTO.getUsername() +" created.");
     		return ResponseEntity.status(HttpStatus.OK).body(
     				new ResponseObject(Snippets.SUCCESS,Snippets.USER_CREATE_SUCCESSFULLY, userDTO));
     	}
