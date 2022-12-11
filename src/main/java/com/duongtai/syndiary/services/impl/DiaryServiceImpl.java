@@ -67,13 +67,13 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public void addComment(Comment comment) {
+    public Comment addComment(Comment comment) {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
         comment.setCreated_at(sdf.format(date));
         comment.setLast_edited(sdf.format(date));
         comment.setDisplay(true);
-        commentRepository.save(comment);
+      return commentRepository.save(comment);
     }
 
     @Override

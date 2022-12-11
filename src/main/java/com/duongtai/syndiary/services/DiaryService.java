@@ -14,7 +14,7 @@ public interface DiaryService {
     List<Diary> findByAuthor(String username);
     List<Comment> loadCommentByDiaryId(Long id);
     void deleteDiaryById(Long id);
-    void addComment(Comment comment);
+    Comment addComment(Comment comment);
     void deleteCommentById(Long id);
     Comment updateCommentById(Comment comment);
 }
