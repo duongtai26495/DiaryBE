@@ -25,7 +25,7 @@ public class Comment {
     @JoinColumn(name = "author", referencedColumnName = "user_id")
     private User author;
 
-    private Long diary_id;
+    private String diary_id;
 
     public Comment() {
     }
@@ -86,11 +86,11 @@ public class Comment {
         this.author = author;
     }
 
-    public Long getDiary_id() {
+    public String getDiary_id() {
         return diary_id;
     }
 
-    public void setDiary_id(Long diary_id) {
+    public void setDiary_id(String diary_id) {
         this.diary_id = diary_id;
     }
 }

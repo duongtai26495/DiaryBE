@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static com.duongtai.syndiary.configs.MyUserDetail.getUsernameLogin;
 
@@ -32,6 +33,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     public Diary saveNewDiary(Diary diary) {
+        diary.setId(UUID.randomUUID().toString());
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
         diary.setCreated_at(sdf.format(date));
@@ -41,7 +43,7 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public Diary findDiaryById(Long id) {
+    public Diary findDiaryById(String id) {
         return diaryRepository.findById(id).get();
     }
 
@@ -57,12 +59,12 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public List<Comment> loadCommentByDiaryId(Long id) {
+    public List<Comment> loadCommentByDiaryId(String id) {
        return commentRepository.getAllCommentOfDiary(id);
     }
 
     @Override
-    public void deleteDiaryById(Long id) {
+    public void deleteDiaryById(String id) {
         diaryRepository.deleteById(id);
     }
 

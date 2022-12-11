@@ -166,23 +166,25 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public ResponseEntity<byte[]> readProfileImageByUsername(String username) {
-
-        try {
-            String fileName = userService.findByUsername(username).getProfile_image();
-            Path file = storageFolderProfile.resolve(fileName);
-            Resource resource = new UrlResource(file.toUri());
-            if (resource.exists() || resource.isReadable()){
-                byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
-                return ResponseEntity
-                        .ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .body(bytes);
-            }else{
+        if(username != null) {
+            try {
+                String fileName = userService.findByUsername(username).getProfile_image();
+                Path file = storageFolderProfile.resolve(fileName);
+                Resource resource = new UrlResource(file.toUri());
+                if (resource.exists() || resource.isReadable()) {
+                    byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
+                    return ResponseEntity
+                            .ok()
+                            .contentType(MediaType.IMAGE_JPEG)
+                            .body(bytes);
+                } else {
+                    return ResponseEntity.noContent().build();
+                }
+            } catch (IOException e) {
                 return ResponseEntity.noContent().build();
             }
-        }catch (IOException e){
-            return ResponseEntity.noContent().build();
         }
+        return null;
     }
 
     @Override

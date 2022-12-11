@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface DiaryService {
     Diary saveNewDiary(Diary diary);
-    Diary findDiaryById(Long id);
+    Diary findDiaryById(String id);
     Diary updateDiaryById(Diary diary);
     List<Diary> getAllDisplayDiary();
     List<Diary> getAllDiaryByAuthor();
     List<Diary> findByAuthor(String username);
-    List<Comment> loadCommentByDiaryId(Long id);
-    void deleteDiaryById(Long id);
+    List<Comment> loadCommentByDiaryId(String id);
+    void deleteDiaryById(String id);
     Comment addComment(Comment comment);
     void deleteCommentById(Long id);
     Comment updateCommentById(Comment comment);

@@ -122,7 +122,7 @@ public class UserController {
 	}
 
 	@GetMapping("diary/load-to-update/{id}")
-	public Diary getToUpdate (@PathVariable Long id){
+	public Diary getToUpdate (@PathVariable String id){
 		Diary diary = diaryService.findDiaryById(id);
 		if(diary.getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
 			return diary;

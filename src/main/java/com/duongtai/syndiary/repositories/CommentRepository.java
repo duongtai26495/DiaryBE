@@ -12,5 +12,5 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("SELECT c FROM Comment c WHERE c.diary_id = :diary_id AND c.display = true")
-    List<Comment> getAllCommentOfDiary(@Param("diary_id") Long id);
+    List<Comment> getAllCommentOfDiary(@Param("diary_id") String id);
 }

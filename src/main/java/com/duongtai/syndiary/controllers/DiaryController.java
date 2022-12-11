@@ -44,7 +44,7 @@ public class DiaryController {
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity updateDiary(@PathVariable Long id, @RequestBody Diary diary){
+    public ResponseEntity updateDiary(@PathVariable String id, @RequestBody Diary diary){
         if (diaryService.findDiaryById(id).getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
             diary.setId(id);
             return  ResponseEntity.status(HttpStatus.OK).body(
@@ -57,7 +57,7 @@ public class DiaryController {
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity deleteById(@PathVariable Long id){
+    public ResponseEntity deleteById(@PathVariable String id){
         Diary diary = diaryService.findDiaryById(id);
         if(diary == null){
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -85,12 +85,12 @@ public class DiaryController {
     }
 
     @GetMapping("public/{id}")
-    public Diary getDiaryById (@PathVariable Long id){
+    public Diary getDiaryById (@PathVariable String id){
         return diaryService.findDiaryById(id);
     }
 
     @GetMapping("comment/{id}")
-    public List<Comment> getAllComment (@PathVariable Long id){
+    public List<Comment> getAllComment (@PathVariable String id){
         return diaryService.loadCommentByDiaryId(id);
     }
 
