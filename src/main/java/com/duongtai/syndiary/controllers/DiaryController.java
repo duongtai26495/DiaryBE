@@ -98,9 +98,8 @@ public class DiaryController {
     public ResponseEntity addNewComment (@RequestBody Comment comment){
         comment.setAuthor(userService.findByUsername(getUsernameLogin()));
         try {
-            diaryService.addComment(comment);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(Snippets.SUCCESS, Snippets.COMMENT_ADDED, null)
+                    new ResponseObject(Snippets.SUCCESS, Snippets.COMMENT_ADDED, diaryService.addComment(comment))
             );
         }
         catch (Exception e)
