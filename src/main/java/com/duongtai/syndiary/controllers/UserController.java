@@ -113,7 +113,7 @@ public class UserController {
 
     @GetMapping("images/{username}")
     public ResponseEntity<byte[]> readUserImage (@PathVariable String username){
-        return storageService.readProfileImage(username);
+        return storageService.readProfileImageByUsername(username);
     }
 
 	@GetMapping("all-diary")

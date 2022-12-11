@@ -28,7 +28,10 @@ public class HomeController {
     public ResponseEntity<byte[]> readFile (@PathVariable String fileName){
         return storageService.readFile(fileName);
     }
-
+    @GetMapping("images/profile/{fileName:.+}")
+    public ResponseEntity<byte[]> readProfileImage (@PathVariable String fileName){
+        return storageService.readProfileImage(fileName);
+    }
 
     @GetMapping("")
     public List<Diary> getAllDiaryDisplay(){
