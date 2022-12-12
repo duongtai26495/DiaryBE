@@ -4,7 +4,7 @@ import java.util.List;
 
 public class UserDTO {
 
-    private Long id;
+    private String id;
 
     private String full_name;
 
@@ -45,14 +45,13 @@ public class UserDTO {
         this.role = role;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
-
 
     public String getEmail() {
         return email;

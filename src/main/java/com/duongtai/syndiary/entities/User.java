@@ -17,9 +17,8 @@ public class User {
 	}
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long id;
+    @Column(name = "id", unique = true)
+    private String id;
 
     @Column(name = "full_name")
     private String full_name;
@@ -93,11 +92,11 @@ public class User {
         this.last_edited = last_edited;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -26,18 +26,18 @@ public class Database {
                 roleService.saveNewRole(role_user);
                 roleService.saveNewRole(role_admin);
                 
-                User user = new User();
-                user.setFull_name("Master admin");
-                user.setUsername("master9981");
-                user.setEmail("master9981@gmail.com");
-                user.setPassword(passwordEncoder.encode("Blackhat9981"));
-                user.setGender(1);
-                user.setProfile_image("default_admin.jpg");
-                user.setRole(role_admin);
-                user.setActive(true);
-                if(userService.findByUsername(user.getUsername()) == null) {
-                userRepository.save(user);
-                }
+//                User user = new User();
+//                user.setFull_name("Master admin");
+//                user.setUsername("master9981");
+//                user.setEmail("master9981@gmail.com");
+//                user.setPassword(passwordEncoder.encode("Blackhat9981"));
+//                user.setGender(1);
+//                user.setProfile_image("default_admin.jpg");
+//                user.setRole(role_admin);
+//                user.setActive(true);
+//                if(userService.findByUsername(user.getUsername()) == null) {
+//                userRepository.save(user);
+//                }
 //
 //                    Test test = new Test(1, userService);
 //                    Test test2 = new Test(2,userService);

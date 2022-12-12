@@ -6,8 +6,8 @@ import javax.persistence.*;
 @Table(name = "comment")
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(unique = true)
+    private String id;
 
     @Column(length = 2000)
     private String content;
@@ -21,8 +21,9 @@ public class Comment {
 
     private Long parent_id = 0L;
 
+    private Long sub_parent_id = 0L;
     @ManyToOne()
-    @JoinColumn(name = "author", referencedColumnName = "user_id")
+    @JoinColumn(name = "author", referencedColumnName = "id")
     private User author;
 
     private String diary_id;
@@ -30,11 +31,11 @@ public class Comment {
     public Comment() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -92,5 +93,13 @@ public class Comment {
 
     public void setDiary_id(String diary_id) {
         this.diary_id = diary_id;
+    }
+
+    public Long getSub_parent_id() {
+        return sub_parent_id;
+    }
+
+    public void setSub_parent_id(Long sub_parent_id) {
+        this.sub_parent_id = sub_parent_id;
     }
 }

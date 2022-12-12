@@ -3,12 +3,13 @@ package com.duongtai.syndiary.services.impl;
 import com.duongtai.syndiary.configs.Snippets;
 import com.duongtai.syndiary.entities.Comment;
 import com.duongtai.syndiary.entities.Diary;
-import com.duongtai.syndiary.entities.User;
-import com.duongtai.syndiary.entities.UserDTO;
 import com.duongtai.syndiary.repositories.CommentRepository;
 import com.duongtai.syndiary.repositories.DiaryRepository;
 import com.duongtai.syndiary.services.DiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -48,14 +49,8 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public List<Diary> findByAuthor(String username) {
-        List<Diary> foundListDiary = new ArrayList<>();
-        for (Diary diary:diaryRepository.findAll()) {
-            if(diary.getAuthor().getUsername().equalsIgnoreCase(username)){
-                foundListDiary.add(diary);
-            }
-        }
-        return foundListDiary;
+    public List<Diary> findByMySelf(String username) {
+        return diaryRepository.findByAuthor(username);
     }
 
     @Override
@@ -70,6 +65,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     public Comment addComment(Comment comment) {
+        comment.setId(UUID.randomUUID().toString());
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
         comment.setCreated_at(sdf.format(date));
@@ -79,7 +75,7 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public void deleteCommentById(Long id) {
+    public void deleteCommentById(String id) {
         Comment comment = commentRepository.findById(id).get();
         comment.setDisplay(false);
         Date date = new Date();
@@ -99,6 +95,14 @@ public class DiaryServiceImpl implements DiaryService {
             return commentRepository.save(foundComment);
         }
         return foundComment;
+    }
+
+    @Override
+    public Comment loadCommentWithId(String id) {
+        if(commentRepository.existsById(id)) {
+            return commentRepository.findById(id).get();
+        }
+        return null;
     }
 
 
@@ -127,14 +131,8 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public List<Diary> getAllDisplayDiary() {
-        List<Diary> displayDiary = new ArrayList<>();
-        for (Diary diary: diaryRepository.findAll()) {
-            if(diary.isDisplay()){
-               displayDiary.add(diary);
-            }
-        }
-        return displayDiary;
+    public Page<Diary> getAllDisplayDiary(Pageable pageable) {
+        return diaryRepository.getAllDisplay(pageable);
     }
 
     @Override

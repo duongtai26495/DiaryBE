@@ -25,7 +25,7 @@ public class Diary {
     private String image_url;
 
     @ManyToOne
-    @JoinColumn(name = "author", referencedColumnName = "user_id")
+    @JoinColumn(name = "author", referencedColumnName = "id")
     private User author;
 
 

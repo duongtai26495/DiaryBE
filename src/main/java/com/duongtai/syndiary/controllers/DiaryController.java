@@ -77,7 +77,7 @@ public class DiaryController {
     public ResponseEntity getDiaryByAuthor (@PathVariable String username){
         if(username.equalsIgnoreCase(getUsernameLogin())){
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(Snippets.SUCCESS, Snippets.DIARY_FOUND, diaryService.findByAuthor(username))
+                    new ResponseObject(Snippets.SUCCESS, Snippets.DIARY_FOUND, diaryService.findByMySelf(username))
             );
         }
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -121,5 +121,10 @@ public class DiaryController {
                     new ResponseObject(Snippets.FAILED, Snippets.UPDATE_COMMENT_FAILED, null)
             );
         }
+    }
+
+    @GetMapping("comment/id={id}")
+    public Comment loadCommentById (@PathVariable String id){
+        return diaryService.loadCommentWithId(id);
     }
 }

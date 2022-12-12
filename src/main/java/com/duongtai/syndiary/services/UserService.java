@@ -17,7 +17,7 @@ public interface UserService {
 
     User saveUser(User user);
 
-    User getById(Long id);
+    User getUserById(String id);
 
     User editByUsername(User user);
 

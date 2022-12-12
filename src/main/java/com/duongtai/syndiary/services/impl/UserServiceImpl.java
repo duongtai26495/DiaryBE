@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (findByEmail(user.getEmail()) != null || findByUsername(user.getUsername()) != null){
             return null;
         }
-
+        user.setId(UUID.randomUUID().toString());
         Role default_role_user = roleService.getRoleByName(ROLE_USER);
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getById(Long id) {
+    public User getUserById(String id) {
         return userRepository.findById(id).get();
     }
 
@@ -118,14 +118,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
         User getUser = userRepository.findByUsername(user.getUsername());
-        getUser.setId(getUser.getId());
 
         if(user.getProfile_image() != null && !user.getProfile_image().equals(getUser.getProfile_image())){
             getUser.setProfile_image(user.getProfile_image());
-        }
-
-        if(user.getActive() != getUser.getActive()) {
-            getUser.setActive(!getUser.getActive());
         }
 
         if(user.getFull_name() != null){
