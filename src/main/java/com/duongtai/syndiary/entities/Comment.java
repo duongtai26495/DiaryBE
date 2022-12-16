@@ -19,9 +19,9 @@ public class Comment {
 
     private boolean display;
 
-    private Long parent_id = 0L;
+    private String parent_id = "";
 
-    private Long sub_parent_id = 0L;
+    private String sub_parent_id = "";
     @ManyToOne()
     @JoinColumn(name = "author", referencedColumnName = "id")
     private User author;
@@ -71,13 +71,6 @@ public class Comment {
         this.display = display;
     }
 
-    public Long getParent_id() {
-        return parent_id;
-    }
-
-    public void setParent_id(Long parent_id) {
-        this.parent_id = parent_id;
-    }
 
     public User getAuthor() {
         return author;
@@ -95,11 +88,19 @@ public class Comment {
         this.diary_id = diary_id;
     }
 
-    public Long getSub_parent_id() {
+    public String getParent_id() {
+        return parent_id;
+    }
+
+    public void setParent_id(String parent_id) {
+        this.parent_id = parent_id;
+    }
+
+    public String getSub_parent_id() {
         return sub_parent_id;
     }
 
-    public void setSub_parent_id(Long sub_parent_id) {
+    public void setSub_parent_id(String sub_parent_id) {
         this.sub_parent_id = sub_parent_id;
     }
 }

@@ -40,11 +40,11 @@ public class HomeController {
     }
 
     @GetMapping("")
-    public List<Diary> getAllDiaryDisplayWithPagination(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "30") int size)
+    public Page<Diary> getAllDiaryDisplayWithPagination(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "20") int size)
     {
         Pageable pageable = PageRequest.of(page,size);
-        return diaryService.getAllDisplayDiary(pageable).getContent();
+        return diaryService.getAllDisplayDiary(pageable);
     }
 
 }
