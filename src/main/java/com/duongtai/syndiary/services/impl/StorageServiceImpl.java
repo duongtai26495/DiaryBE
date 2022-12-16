@@ -64,7 +64,6 @@ public class StorageServiceImpl implements StorageService {
                 CHECK_UPLOAD = 2;
             }
 
-        LOG.info("CHECK TYPE UPLOAD: "+CHECK_UPLOAD);
         try {
             if (file.isEmpty()) {
                 throw new RuntimeException(Snippets.FAILED_STORE_EMPTY_FILE);
@@ -102,7 +101,7 @@ public class StorageServiceImpl implements StorageService {
                     return generatedFileName;
 
                 }
-                else if(CHECK_UPLOAD == 2){
+                else {
                     User user = new User();
                     user.setUsername(getUsernameLogin());
                     user.setProfile_image(generatedFileName);
@@ -112,7 +111,6 @@ public class StorageServiceImpl implements StorageService {
                 }
 
 
-            return null;
         }catch (IOException e){
             throw new RuntimeException(Snippets.STORE_FILE_FAILED,e);
         }

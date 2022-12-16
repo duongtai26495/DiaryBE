@@ -6,6 +6,10 @@ import com.duongtai.syndiary.services.impl.DiaryServiceImpl;
 import com.duongtai.syndiary.services.impl.StorageServiceImpl;
 import com.duongtai.syndiary.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +36,8 @@ public class UserController {
 	@Autowired
 	DiaryServiceImpl diaryService;
 
-    @GetMapping("profile/{username}")
-    public ResponseEntity<ResponseObject> getUserByUsername(@PathVariable String username){
+    @GetMapping("profile")
+    public ResponseEntity<ResponseObject> getUserByUsername(@RequestParam(name = "username") String username){
     	User user = userService.getUserByUsername(username);
     	UserDTO userDTO = ConvertEntity.convertToDTO(user);
 		return ResponseEntity.status(HttpStatus.OK).body(
@@ -54,10 +58,9 @@ public class UserController {
 				new ResponseObject(Snippets.FAILED,Snippets.EMAIL_ALREADY_TAKEN +" or " + Snippets.USERNAME_ALREADY_TAKEN, null));
     }
 
-    @PutMapping("edit/{username}")
-    public ResponseEntity<ResponseObject> editByUsername(@PathVariable String username, @RequestBody User user){
-        user.setUsername(username);
-        if(userService.findByUsername(username) != null) {
+    @PutMapping("update")
+    public ResponseEntity<ResponseObject> editByUsername(@RequestBody User user){
+        if(userService.findByUsername(user.getUsername()) != null) {
         	UserDTO userDTO = ConvertEntity.convertToDTO(userService.editByUsername(user));
         	return ResponseEntity.status(HttpStatus.OK).body(
         			new ResponseObject(Snippets.SUCCESS, Snippets.USER_EDITED, userDTO)
@@ -67,7 +70,7 @@ public class UserController {
 				new ResponseObject(Snippets.FAILED,Snippets.USER_NOT_FOUND, null));
     }
 
-    @PutMapping("change_password")
+    @PutMapping("update_password")
     public ResponseEntity<ResponseObject> updatePasswordByUsername(@RequestBody User user){
     	if(userService.updatePassword(user.getPassword())) {
     		return ResponseEntity.status(HttpStatus.OK).body(
@@ -79,56 +82,43 @@ public class UserController {
     			);
     }
 
-    @PostMapping("upload_image/{username}")
-    public ResponseEntity<ResponseObject> uploadImageWithUsername(@RequestParam("image") MultipartFile file, @PathVariable String username){
+    @PostMapping("upload_image")
+    public ResponseEntity<ResponseObject> uploadImageWithUsername(@RequestParam("image") MultipartFile file, @RequestParam(defaultValue = "") String username){
     	String filename = "";
-		if(username.equalsIgnoreCase(getUsernameLogin())){
-			filename = storageService.storeFile(file, username);
+		if(!username.equals("")){
+			if(username.equalsIgnoreCase(getUsernameLogin())){
+				filename = storageService.storeFile(file, username);
+				if(filename != null) {
+					return ResponseEntity.status(HttpStatus.OK).body(
+							new ResponseObject(Snippets.SUCCESS, Snippets.UPLOAD_PROFILE_IMAGE_SUCCESS, filename)
+					);
+				}
+			}
+
+			return ResponseEntity.status(HttpStatus.OK).body(
+					new ResponseObject(Snippets.FAILED, Snippets.STORE_FILE_FAILED, filename)
+			);
+
+		}else{
+			filename = storageService.storeFile(file, "noname");
 			if(filename != null) {
 				return ResponseEntity.status(HttpStatus.OK).body(
-						new ResponseObject(Snippets.SUCCESS, Snippets.UPLOAD_PROFILE_IMAGE_SUCCESS, filename)
+						new ResponseObject(Snippets.SUCCESS, Snippets.UPLOAD_IMAGE_SUCCESS, filename)
 				);
 			}
-		}
-
-    		return ResponseEntity.status(HttpStatus.OK).body(
-	    			new ResponseObject(Snippets.FAILED, Snippets.STORE_FILE_FAILED, filename)
-	    			);
-    			
-    }
-
-    @PostMapping("upload_image")
-    public ResponseEntity<ResponseObject> uploadImage(@RequestParam("image") MultipartFile file){
-    	String filename = storageService.storeFile(file, "noname");
-		if(filename != null) {
 			return ResponseEntity.status(HttpStatus.OK).body(
-	    			new ResponseObject(Snippets.SUCCESS, Snippets.UPLOAD_IMAGE_SUCCESS, filename)
-	    			);
+					new ResponseObject(Snippets.FAILED, Snippets.STORE_FILE_FAILED, null)
+			);
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(
-    			new ResponseObject(Snippets.FAILED, Snippets.STORE_FILE_FAILED, null)
-    			);
 
     }
 
-    @GetMapping("image/{username}")
-    public ResponseEntity<byte[]> readUserImage (@PathVariable String username){
-        return storageService.readProfileImageByUsername(username);
-    }
-
-	@GetMapping("all-diary")
-	public List<Diary> getAllDiaryByAuthor (){
-		return diaryService.getAllDiaryByAuthor();
+	@GetMapping("diary")
+	public Page<Diary> getAllDiaryByAuthor (){
+		Pageable pageable = PageRequest.of(0,10);
+		return diaryService.getAllDiaryByAuthor(getUsernameLogin(), pageable);
 	}
 
-	@GetMapping("diary/load-to-update/{id}")
-	public Diary getToUpdate (@PathVariable String id){
-		Diary diary = diaryService.findDiaryById(id);
-		if(diary.getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
-			return diary;
-		}
-		return null;
-	}
 
     @GetMapping("refresh_token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {

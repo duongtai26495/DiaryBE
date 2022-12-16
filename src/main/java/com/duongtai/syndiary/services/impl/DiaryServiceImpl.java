@@ -13,9 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import static com.duongtai.syndiary.configs.MyUserDetail.getUsernameLogin;
@@ -49,13 +47,9 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public List<Diary> findByMySelf(String username) {
-        return diaryRepository.findByAuthor(username);
-    }
-
-    @Override
-    public List<Comment> loadCommentByDiaryId(String id) {
-       return commentRepository.getAllCommentOfDiary(id);
+    public Page<Comment> loadCommentByDiaryId(String id) {
+        Pageable pageable = PageRequest.of(0, 10);
+       return commentRepository.getAllCommentOfDiary(id, pageable);
     }
 
     @Override
@@ -136,13 +130,8 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public List<Diary> getAllDiaryByAuthor() {
-        List<Diary> diaries = new ArrayList<>();
-        for (Diary diary : diaryRepository.findAll()){
-            if(diary.getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
-                diaries.add(diary);
-            }
-        }
-        return diaries;
+    public Page<Diary> getAllDiaryByAuthor(String username, Pageable pageable) {
+
+        return diaryRepository.findByAuthor(username, pageable);
     }
 }

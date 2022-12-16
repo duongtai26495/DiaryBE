@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
-        customAuthenticationFilter.setFilterProcessesUrl("/auth/login");
+        customAuthenticationFilter.setFilterProcessesUrl("/user/login");
         http
         .httpBasic()
         .and()
@@ -37,13 +37,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(
-        "/user/register",
-                    "/",
-                    "/auth/login",
-                    "/user/images/**",
+                        "/",
+                    "/user/register",
+                    "/user/login",
                 	"/create_user",
-                    "/images/**",
-                    "/diary/public/*").permitAll()
+                    "/images/**").permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest().permitAll();

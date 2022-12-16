@@ -14,14 +14,13 @@ public interface DiaryService {
     Page<Diary> getAllDisplayDiary(Pageable pageable);
 
     //Get all diary display by author when access by friend
-    List<Diary> getAllDiaryByAuthor();
+    Page<Diary> getAllDiaryByAuthor(String username, Pageable pageable);
 
-    //Get all diary display by author when access by myself
-    List<Diary> findByMySelf(String username);
-    List<Comment> loadCommentByDiaryId(String id);
+    Page<Comment> loadCommentByDiaryId(String id);
     void deleteDiaryById(String id);
     Comment addComment(Comment comment);
     void deleteCommentById(String id);
     Comment updateCommentById(Comment comment);
     Comment loadCommentWithId(String id);
+
 }

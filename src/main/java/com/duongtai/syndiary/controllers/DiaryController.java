@@ -8,14 +8,23 @@ import com.duongtai.syndiary.entities.User;
 import com.duongtai.syndiary.services.impl.DiaryServiceImpl;
 import com.duongtai.syndiary.services.impl.StorageServiceImpl;
 import com.duongtai.syndiary.services.impl.UserServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.duongtai.syndiary.configs.MyUserDetail.getUsernameLogin;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin
 @RestController
@@ -43,10 +52,9 @@ public class DiaryController {
                 new ResponseObject(Snippets.FAILED,Snippets.YOU_DONT_HAVE_PERMISSION, null));
     }
 
-    @PutMapping("update/{id}")
-    public ResponseEntity updateDiary(@PathVariable String id, @RequestBody Diary diary){
-        if (diaryService.findDiaryById(id).getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
-            diary.setId(id);
+    @PutMapping("update")
+    public ResponseEntity updateDiary(@RequestBody Diary diary){
+        if (diaryService.findDiaryById(diary.getId()).getAuthor().getUsername().equalsIgnoreCase(getUsernameLogin())){
             return  ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(Snippets.SUCCESS,Snippets.DIARY_EDITED,
                             diaryService.updateDiaryById(diary))
@@ -56,8 +64,8 @@ public class DiaryController {
                 new ResponseObject(Snippets.FAILED,Snippets.YOU_DONT_HAVE_PERMISSION, null));
     }
 
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity deleteById(@PathVariable String id){
+    @DeleteMapping("delete")
+    public ResponseEntity deleteById(@RequestParam String id){
         Diary diary = diaryService.findDiaryById(id);
         if(diary == null){
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -76,55 +84,25 @@ public class DiaryController {
     @GetMapping("author={username}")
     public ResponseEntity getDiaryByAuthor (@PathVariable String username){
         if(username.equalsIgnoreCase(getUsernameLogin())){
+            Pageable pageable = PageRequest.of(0, 10);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(Snippets.SUCCESS, Snippets.DIARY_FOUND, diaryService.findByMySelf(username))
+                    new ResponseObject(Snippets.SUCCESS, Snippets.DIARY_FOUND, diaryService.getAllDiaryByAuthor(username, pageable))
             );
         }
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                 new ResponseObject(Snippets.FAILED,Snippets.YOU_DONT_HAVE_PERMISSION, null));
     }
 
-    @GetMapping("public/{id}")
-    public Diary getDiaryById (@PathVariable String id){
-        return diaryService.findDiaryById(id);
-    }
 
-    @GetMapping("comment/{id}")
-    public List<Comment> getAllComment (@PathVariable String id){
-        return diaryService.loadCommentByDiaryId(id);
-    }
-
-    @PostMapping("comment/add")
-    public ResponseEntity addNewComment (@RequestBody Comment comment){
-        comment.setAuthor(userService.findByUsername(getUsernameLogin()));
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(Snippets.SUCCESS, Snippets.COMMENT_ADDED, diaryService.addComment(comment))
-            );
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject(Snippets.FAILED, String.format(Snippets.ADD_NEW_COMMENT_FAILED,e.getMessage()), null)
-            );
+    @GetMapping("id={diary_id}")
+    public void getDiaryById (@PathVariable String diary_id, HttpServletResponse response) throws IOException {
+        if(diaryService.findDiaryById(diary_id) != null){
+            Map<String, Object> result = new HashMap<>();
+            result.put("diary",diaryService.findDiaryById(diary_id));
+            result.put("comment",diaryService.loadCommentByDiaryId(diary_id));
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), result);
         }
     }
 
-    @PutMapping("comment/update")
-    public ResponseEntity updateComment (@RequestBody Comment comment){
-        if(getUsernameLogin().equalsIgnoreCase(comment.getAuthor().getUsername())){
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(Snippets.SUCCESS, Snippets.COMMENT_UPDATED, diaryService.updateCommentById(comment))
-            );
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject(Snippets.FAILED, Snippets.UPDATE_COMMENT_FAILED, null)
-            );
-        }
-    }
-
-    @GetMapping("comment/id={id}")
-    public Comment loadCommentById (@PathVariable String id){
-        return diaryService.loadCommentWithId(id);
-    }
 }

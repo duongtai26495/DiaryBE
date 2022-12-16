@@ -13,7 +13,7 @@ import java.util.List;
 public interface DiaryRepository extends JpaRepository<Diary, String> {
 
     @Query("SELECT d FROM Diary d WHERE d.author.username = :username")
-    List<Diary> findByAuthor (String username);
+    Page<Diary> findByAuthor (String username, Pageable pageable);
 
     @Query("SELECT d FROM Diary d ")
     Page<Diary> getAllDisplay (Pageable pageable);

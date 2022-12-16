@@ -1,32 +1,25 @@
-/* -------------------------------------- */
+// User
+post : user/login : form-data username/password
+post : user/register : json user (username, full_name, password, email, gender)
+post : user/upload_image : access token, param image, param optional username 
+put : user/update : access token, json user(full_name, password, gender)
+put : user/update_password : access token, json user(password)
+get : user/diary : access token
+get : user/profile : param username
 
---- For user ---
+// Diary
+post : diary/save : access token, json diary (title, content, image_url, display)
+put : diary/update : access token, json diary (title, content, image_url, display)
+delete : diary/delete : access token, param id
+get : diary/author={username} 
+get : id={diary_id} 
 
-/user/profile/{username}
-/user/register
-/user/edit/{username}
-/user/change_password
-/user/uploadImage/{username}
-/user/uploadImage
-/user/images/{username}
-/user/logoutSuccess
-/user/refresh_token
+// Comment
+post : comment/add : access token, json comment(content, image_url)
+get : comment/id={id}
+put : comment : json comment (content, image_url)
 
---- Public images ---
-
-/images/{fileName}
-
---- For diary ---
-
-/diary/all
-/diary/create
-/diary/{id}
-/diary/delete/{id}
-/diary/edit/{id}
-/diary/
-
---- For authentication --
-
-/auth/login
-/auth/logout
-/auth/logout
+// Public
+get : / 
+get : image/fileName
+get : image/profile/fileName
