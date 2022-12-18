@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Diary {
 
     @Id
-    @Column(unique = true)
+    @Column(name = "id",unique = true)
     private String id;
 
     @Column(name = "title")
@@ -47,7 +47,6 @@ public class Diary {
     public Diary() {
     }
 
-    @JsonManagedReference
     public List<Category> getCategories() {
         return categories;
     }

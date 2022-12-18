@@ -29,4 +29,6 @@ public interface DiaryService {
     Category saveNewCategory(Category category);
 
     Category loadCategoryById(String id);
+
+    Page<Diary> loadDiaryByCategory(String id, Pageable pageable);
 }

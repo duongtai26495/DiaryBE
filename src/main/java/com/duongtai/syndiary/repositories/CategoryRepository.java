@@ -19,4 +19,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query(value = "SELECT c FROM Category c WHERE c.id = :id")
     Category loadCategoryById(@Param("id") String id);
+
 }

@@ -1,6 +1,7 @@
 package com.duongtai.syndiary.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Category {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
+    @JsonIgnore
     private List<Diary> diaries = new ArrayList<>();
 
     private boolean display;
@@ -32,7 +34,7 @@ public class Category {
         this.id = id;
     }
 
-    @JsonBackReference
+
     public List<Diary> getDiaries() {
         return diaries;
     }

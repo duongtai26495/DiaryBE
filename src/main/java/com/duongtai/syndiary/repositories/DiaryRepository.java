@@ -18,5 +18,15 @@ public interface DiaryRepository extends JpaRepository<Diary, String> {
     @Query("SELECT d FROM Diary d ")
     Page<Diary> getAllDisplay (Pageable pageable);
 
+    @Query(value = "" +
+            "SELECT * " +
+            "FROM diary d " +
+            "INNER JOIN diary_category dc " +
+            "ON d.id = dc.diary_id " +
+            "INNER JOIN category c " +
+            "ON dc.category_id = c.id " +
+            "WHERE c.id = :id",
+            nativeQuery = true)
+    Page<Diary> getAllByCategoryId (String id, Pageable pageable);
 
 }

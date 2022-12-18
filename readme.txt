@@ -18,6 +18,12 @@ get : id={diary_id}
 post : comment/add : access token, json comment(content, image_url)
 get : comment/id={id}
 put : comment : json comment (content, image_url)
+post : category/new : json category, role ADMIN
+
+// Category
+get : categories
+get : category/id={id}
+get : category={id}
 
 // Public
 get : / 

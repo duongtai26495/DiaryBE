@@ -60,4 +60,13 @@ public class HomeController {
         return diaryService.loadCategoryById(id);
     }
 
+    @GetMapping("category={id}")
+    public Page<Diary> getByCategory (@PathVariable String id,
+                                      @RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "20") int size)
+    {
+        Pageable pageable = PageRequest.of(page,size);
+        return diaryService.loadDiaryByCategory(id, pageable);
+    }
+
 }

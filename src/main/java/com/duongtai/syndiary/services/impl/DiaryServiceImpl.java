@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -121,6 +122,11 @@ public class DiaryServiceImpl implements DiaryService {
         return categoryRepository.loadCategoryById(id);
     }
 
+    @Override
+    public Page<Diary> loadDiaryByCategory(String id, Pageable pageable) {
+            return diaryRepository.getAllByCategoryId(id, pageable);
+    }
+
 
     @Override
     public Diary updateDiaryById(Diary diary) {
@@ -131,7 +137,7 @@ public class DiaryServiceImpl implements DiaryService {
 
         foundDiary.setLast_edited(sdf.format(date));
 
-        if(diary.getCategories() != foundDiary.getCategories()) {
+        if(foundDiary.getCategories().size() < 1 || diary.getCategories() != foundDiary.getCategories()) {
             foundDiary.setCategories(diary.getCategories());
         }
         if(diary.isDisplay() != foundDiary.isDisplay()){
