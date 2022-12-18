@@ -1,8 +1,10 @@
 package com.duongtai.syndiary.services.impl;
 
 import com.duongtai.syndiary.configs.Snippets;
+import com.duongtai.syndiary.entities.Category;
 import com.duongtai.syndiary.entities.Comment;
 import com.duongtai.syndiary.entities.Diary;
+import com.duongtai.syndiary.repositories.CategoryRepository;
 import com.duongtai.syndiary.repositories.CommentRepository;
 import com.duongtai.syndiary.repositories.DiaryRepository;
 import com.duongtai.syndiary.services.DiaryService;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static com.duongtai.syndiary.configs.MyUserDetail.getUsernameLogin;
@@ -30,6 +33,8 @@ public class DiaryServiceImpl implements DiaryService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Override
     public Diary saveNewDiary(Diary diary) {
         diary.setId(UUID.randomUUID().toString());
@@ -99,6 +104,23 @@ public class DiaryServiceImpl implements DiaryService {
         return null;
     }
 
+    @Override
+    public List<Category> loadAllCategory() {
+        return categoryRepository.loadAllCategory();
+    }
+
+    @Override
+    public Category saveNewCategory(Category category) {
+            category.setId(UUID.randomUUID().toString());
+            category.setDisplay(true);
+            return categoryRepository.save(category);
+    }
+
+    @Override
+    public Category loadCategoryById(String id) {
+        return categoryRepository.loadCategoryById(id);
+    }
+
 
     @Override
     public Diary updateDiaryById(Diary diary) {
@@ -109,6 +131,9 @@ public class DiaryServiceImpl implements DiaryService {
 
         foundDiary.setLast_edited(sdf.format(date));
 
+        if(diary.getCategories() != foundDiary.getCategories()) {
+            foundDiary.setCategories(diary.getCategories());
+        }
         if(diary.isDisplay() != foundDiary.isDisplay()){
             foundDiary.setDisplay(!foundDiary.isDisplay());
         }

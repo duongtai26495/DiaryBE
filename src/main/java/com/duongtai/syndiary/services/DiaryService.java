@@ -1,5 +1,6 @@
 package com.duongtai.syndiary.services;
 
+import com.duongtai.syndiary.entities.Category;
 import com.duongtai.syndiary.entities.Comment;
 import com.duongtai.syndiary.entities.Diary;
 import org.springframework.data.domain.Page;
@@ -23,4 +24,9 @@ public interface DiaryService {
     Comment updateCommentById(Comment comment);
     Comment loadCommentWithId(String id);
 
+    List<Category> loadAllCategory();
+
+    Category saveNewCategory(Category category);
+
+    Category loadCategoryById(String id);
 }

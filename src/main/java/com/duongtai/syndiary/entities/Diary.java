@@ -2,8 +2,10 @@ package com.duongtai.syndiary.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +30,12 @@ public class Diary {
     @JoinColumn(name = "author", referencedColumnName = "id")
     private User author;
 
+    @ManyToMany
+    @JoinTable(
+            name = "diary_category",
+            joinColumns = @JoinColumn(name = "diary_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories = new ArrayList<>();
 
     @Column(name = "created_at" ,updatable = false)
     private String created_at;
@@ -37,6 +45,15 @@ public class Diary {
     private boolean display;
 
     public Diary() {
+    }
+
+    @JsonManagedReference
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public String getId() {

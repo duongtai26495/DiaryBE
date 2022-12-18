@@ -2,6 +2,7 @@ package com.duongtai.syndiary.controllers;
 
 import com.duongtai.syndiary.configs.Snippets;
 import com.duongtai.syndiary.entities.*;
+import com.duongtai.syndiary.repositories.CategoryRepository;
 import com.duongtai.syndiary.services.impl.DiaryServiceImpl;
 import com.duongtai.syndiary.services.impl.StorageServiceImpl;
 import com.duongtai.syndiary.services.impl.UserServiceImpl;
@@ -36,6 +37,8 @@ public class UserController {
 	@Autowired
 	DiaryServiceImpl diaryService;
 
+	@Autowired
+	private CategoryRepository categoryRepository;
     @GetMapping("profile")
     public ResponseEntity<ResponseObject> getUserByUsername(@RequestParam(name = "username") String username){
     	User user = userService.getUserByUsername(username);
@@ -125,5 +128,16 @@ public class UserController {
         userService.refreshToken(request,response);
     }
 
+	@PostMapping("category/new")
+	public Category saveNew(@RequestBody Category category){
+		User user = userService.findByUsername(getUsernameLogin());
+		if(categoryRepository.loadCategoryByName(category.getName().toLowerCase()) == null
+				&& user.getRole().getName().equals(Snippets.ROLE_ADMIN)) {
+			return diaryService.saveNewCategory(category);
+		}
+		else{
+			return null;
+		}
+	}
 
 }

@@ -1,7 +1,9 @@
 package com.duongtai.syndiary.controllers;
 
 import com.duongtai.syndiary.configs.Snippets;
+import com.duongtai.syndiary.entities.Category;
 import com.duongtai.syndiary.entities.Diary;
+import com.duongtai.syndiary.repositories.CategoryRepository;
 import com.duongtai.syndiary.services.impl.DiaryServiceImpl;
 import com.duongtai.syndiary.services.impl.StorageServiceImpl;
 import com.duongtai.syndiary.services.impl.UserServiceImpl;
@@ -30,6 +32,7 @@ public class HomeController {
     @Autowired
     private DiaryServiceImpl diaryService;
 
+
     @GetMapping("image/{fileName:.+}")
     public ResponseEntity<byte[]> readFile (@PathVariable String fileName){
         return storageService.readFile(fileName);
@@ -45,6 +48,16 @@ public class HomeController {
     {
         Pageable pageable = PageRequest.of(page,size);
         return diaryService.getAllDisplayDiary(pageable);
+    }
+
+    @GetMapping("categories")
+    public List<Category> loadAllCategory (){
+        return diaryService.loadAllCategory();
+    }
+
+    @GetMapping("category/id={id}")
+    public Category loadCategory (@PathVariable String id) {
+        return diaryService.loadCategoryById(id);
     }
 
 }
