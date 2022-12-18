@@ -69,4 +69,13 @@ public class HomeController {
         return diaryService.loadDiaryByCategory(id, pageable);
     }
 
+    @GetMapping("search={keyword}")
+    public Page<Diary> searchDiary (@PathVariable String keyword){
+        Pageable pageable = PageRequest.of(0,10);
+        if(keyword.isEmpty()){
+            return null;
+        }
+        return diaryService.searchDiary(keyword.toLowerCase(), pageable);
+    }
+
 }

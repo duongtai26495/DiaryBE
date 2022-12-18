@@ -31,4 +31,6 @@ public interface DiaryService {
     Category loadCategoryById(String id);
 
     Page<Diary> loadDiaryByCategory(String id, Pageable pageable);
+
+    Page<Diary> searchDiary (String keyword, Pageable pageable);
 }

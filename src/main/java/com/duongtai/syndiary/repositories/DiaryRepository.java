@@ -29,4 +29,15 @@ public interface DiaryRepository extends JpaRepository<Diary, String> {
             nativeQuery = true)
     Page<Diary> getAllByCategoryId (String id, Pageable pageable);
 
+    @Query(value = "" +
+            "SELECT * " +
+            "FROM diary d " +
+            "WHERE d.title " +
+            "LIKE %:keyword% " +
+            "AND d.display = 1 " +
+            "OR d.content " +
+            "LIKE %:keyword% "+
+            "AND d.display = 1", nativeQuery = true )
+    Page<Diary> searchDiary (String keyword, Pageable pageable);
+
 }

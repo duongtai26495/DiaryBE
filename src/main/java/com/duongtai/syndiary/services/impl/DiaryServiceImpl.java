@@ -127,6 +127,11 @@ public class DiaryServiceImpl implements DiaryService {
             return diaryRepository.getAllByCategoryId(id, pageable);
     }
 
+    @Override
+    public Page<Diary> searchDiary(String keyword, Pageable pageable) {
+        return diaryRepository.searchDiary(keyword, pageable);
+    }
+
 
     @Override
     public Diary updateDiaryById(Diary diary) {
