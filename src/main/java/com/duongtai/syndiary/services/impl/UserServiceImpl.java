@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.duongtai.syndiary.configs.MailSender;
 import com.duongtai.syndiary.configs.MyUserDetail;
 import com.duongtai.syndiary.configs.Snippets;
 import com.duongtai.syndiary.entities.*;
@@ -13,10 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -48,6 +47,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MailSender mailSender;
+
     private static final String ROLE_USER = Snippets.ROLE_USER;
 
     public UserServiceImpl() {
@@ -64,6 +66,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     	return userRepository.findByEmail(email);
     }
 
+    private void sendEmail (
+            String to,
+            String content
+    ) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("diarygroup.base2022@gmail.com");
+        message.setTo(to);
+        message.setSubject(Snippets.ACCOUNT_CREATED_SUCCESS);
+        message.setText(content);
+        mailSender.getJavaMailSender().send(message);
+        System.out.println("Send mail success");
+    }
+
+    private String generateToken(String username, String email, String active_token){
+        Algorithm algorithm = Algorithm.HMAC256(Snippets.SECRET_CODE.getBytes());
+        String token = JWT.create()
+                .withSubject(username)
+                .withClaim("token",active_token)
+                .withIssuer(email)
+                .sign(algorithm);
+        return token;
+    }
 
     @Override
     public synchronized User saveUser(User user) {
@@ -71,27 +95,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (findByEmail(user.getEmail()) != null || findByUsername(user.getUsername()) != null){
             return null;
         }
+
         user.setId(UUID.randomUUID().toString());
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setActive(true);
+        user.setActive(false);
         user.setJoined_at(sdf.format(date));
         user.setLast_edited(sdf.format(date));
         List<Role> roles = new ArrayList<>();
         roles.add(roleService.getRoleByName(Snippets.ROLE_USER));
         user.setRoles(roles);
-        
+        String active_token = generateToken(user.getEmail(), user.getUsername(), UUID.randomUUID().toString());
+        user.setActive_token(active_token);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated()){
-            LOG.info(String.format("User '%s' register successfully",
-                    user.getUsername()));
-        }else{
-            System.out.println(Snippets.USER_DO_NOT_LOGIN);
-        }
-        
-        return userRepository.save(user);
+        User doneUser = userRepository.save(user);
+        userRepository.save(doneUser);
+        String url = "http://localhost:3000/active/key="+active_token;
+        sendEmail(user.getEmail(), "You can click on this url: "+url+" to active account and login. Thank you");
+        return doneUser;
     }
 
     @Override
@@ -202,14 +224,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User changeActiveUser(User user) {
-        List<Role> roles = userRepository.findByUsername(getUsernameLogin()).getRoles();
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
+        user.setLast_edited(sdf.format(date));
+        return userRepository.save(user);
+    }
 
-            if(roles.stream().anyMatch(roleService.getRoleByName(Snippets.ROLE_ADMIN)::equals)){
-                User foundUser = userRepository.findByUsername(user.getUsername());
-                foundUser.setActive(user.getActive());
-                return userRepository.save(foundUser);
-            }
-        return null;
+    @Override
+    public User findByActiveCode(String code) {
+        return userRepository.findUserByActiveCode(code);
     }
 
 }

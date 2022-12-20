@@ -80,7 +80,7 @@ public class Database {
             }
             for(User user : users){
                 System.out.println("Create user: "+user.getUsername()+"/Thread: "+threadNumber);
-                userService.saveUser(user);
+//                userService.saveUser(user);
             }
         }
     }

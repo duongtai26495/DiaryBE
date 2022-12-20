@@ -31,4 +31,6 @@ public interface UserService {
     User changeRoleUser(User user);
 
     User changeActiveUser(User user);
+
+    User findByActiveCode(String code);
 }

@@ -42,6 +42,7 @@ public class User {
 
     private int gender;
 
+    public String active_token ;
     @Column(length = 1000)
     private String profile_image;
 
@@ -61,6 +62,15 @@ public class User {
     private List<Diary> diaries;
 
     public User() {
+    }
+
+
+    public String getActive_token() {
+        return active_token;
+    }
+
+    public void setActive_token(String active_token) {
+        this.active_token = active_token;
     }
 
     public String getProfile_image() {

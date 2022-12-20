@@ -85,4 +85,12 @@ public class Snippets {
     public static final String UPDATED_SUCCESS = "Updated %s success";
     public static final String DELETED_SUCCESS = "Delete %s success";
     public static final String NOT_FOUND = "%s with id %s not found";
+
+    //mail
+    public static final String ACCOUNT_CREATED_SUCCESS = "Your account create successfully!";
+
+    //type
+    public static final String TYPE_REGISTER = "register";
+    public static final String TYPE_ACTIVE = "active";
+
 }

@@ -1,5 +1,9 @@
 package com.duongtai.syndiary.controllers;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.duongtai.syndiary.configs.Snippets;
 import com.duongtai.syndiary.entities.*;
 import com.duongtai.syndiary.repositories.CategoryRepository;
@@ -15,11 +19,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.List;
 
@@ -41,6 +47,10 @@ public class UserController {
 
 	@Autowired
 	RoleServiceImpl roleService;
+
+	@Autowired
+	PasswordEncoder passwordEncoder;
+
 	@Autowired
 	private CategoryRepository categoryRepository;
     @GetMapping("profile")
@@ -130,4 +140,26 @@ public class UserController {
 	return null;
 	}
 
+	@GetMapping("active")
+	public ResponseEntity<ResponseObject> activeAccount (@RequestParam("code") String code){
+		if(code != null){
+			User user = userService.findByActiveCode(code);
+
+			if(user == null || user.getActive()){
+				return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+						new ResponseObject(Snippets.FAILED, Snippets.ACCOUNT_CREATED_SUCCESS,null)
+				);
+			}
+
+			user.setActive(true);
+			userService.changeActiveUser(user);
+
+			return ResponseEntity.status(HttpStatus.OK).body(
+					new ResponseObject(Snippets.SUCCESS, Snippets.ACCOUNT_CREATED_SUCCESS,null)
+			);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+				new ResponseObject(Snippets.FAILED, Snippets.ACCOUNT_CREATED_SUCCESS,null)
+		);
+	}
 }
