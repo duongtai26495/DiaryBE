@@ -11,7 +11,7 @@ public class ConvertEntity {
         userDTO.setActive(user.getActive());
         userDTO.setJoined_at(user.getJoined_at());
         userDTO.setLast_edited(user.getLast_edited());
-        userDTO.setRole(user.getRole());
+        userDTO.setRoles(user.getRoles());
         userDTO.setProfile_image(user.getProfile_image());
         return userDTO;
     }

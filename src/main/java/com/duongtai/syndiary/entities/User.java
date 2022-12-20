@@ -45,9 +45,12 @@ public class User {
     @Column(length = 1000)
     private String profile_image;
 
-    @ManyToOne()
-    @JoinColumn(name = "role", referencedColumnName = "role_id")
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "role_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles;
 
     @JsonIgnore
     @OneToMany(targetEntity = Comment.class, mappedBy = "author",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -149,12 +152,12 @@ public class User {
         this.gender = gender;
     }
 
-    public Role getRole() {
-        return role;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public List<Comment> getComments() {

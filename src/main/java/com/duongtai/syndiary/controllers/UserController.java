@@ -4,6 +4,7 @@ import com.duongtai.syndiary.configs.Snippets;
 import com.duongtai.syndiary.entities.*;
 import com.duongtai.syndiary.repositories.CategoryRepository;
 import com.duongtai.syndiary.services.impl.DiaryServiceImpl;
+import com.duongtai.syndiary.services.impl.RoleServiceImpl;
 import com.duongtai.syndiary.services.impl.StorageServiceImpl;
 import com.duongtai.syndiary.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class UserController {
 	@Autowired
 	DiaryServiceImpl diaryService;
 
+	@Autowired
+	RoleServiceImpl roleService;
 	@Autowired
 	private CategoryRepository categoryRepository;
     @GetMapping("profile")
@@ -121,7 +124,7 @@ public class UserController {
 	public Category saveNew(@RequestBody Category category){
 		User user = userService.findByUsername(getUsernameLogin());
 		if(categoryRepository.loadCategoryByName(category.getName().toLowerCase()) == null
-				&& user.getRole().getName().equals(Snippets.ROLE_ADMIN)) {
+				&& user.getRoles().stream().anyMatch(roleService.getRoleByName(Snippets.ROLE_ADMIN)::equals)) {
 			return diaryService.saveNewCategory(category);
 		}
 	return null;

@@ -15,28 +15,28 @@ public class Role {
 	}
 	
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private Long id;
+    @Column(name = "role_id", unique = true)
+    private String id;
 
     private String name;
 
-    @OneToMany(targetEntity = User.class, mappedBy = "role",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "roles")
     @JsonIgnore
     private List<User> users;
 
     public Role() {
     }
 
-    public Role(String name) {
+    public Role(String id, String name) {
         this.name = name;
+        this.id = id;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

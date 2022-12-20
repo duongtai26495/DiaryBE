@@ -78,7 +78,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setActive(true);
         user.setJoined_at(sdf.format(date));
         user.setLast_edited(sdf.format(date));
-        user.setRole(roleService.getRoleByName(ROLE_USER));
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleService.getRoleByName(Snippets.ROLE_USER));
+        user.setRoles(roles);
         
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -148,13 +150,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();
                 User user = userRepository.findByUsername(username);
-                List<Role> roles = new ArrayList<>();
-                roles.add(user.getRole());
                 String access_token = JWT.create()
                         .withSubject(user.getUsername())
                         .withIssuer(request.getRequestURL().toString())
                         .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                        .withClaim(Snippets.ROLES,roles.stream().map(Role::getName).collect(Collectors.toList()))
+                        .withClaim(Snippets.ROLES,user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
                         .sign(algorithm);
 
                 Map<String, String> tokens = new HashMap<>();
@@ -190,11 +190,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User changeRoleUser(User user) {
-        Role role = userRepository.findByUsername(getUsernameLogin()).getRole();
+        List<Role> roles = userRepository.findByUsername(getUsernameLogin()).getRoles();
 
-            if(role.getName().equals(Snippets.ROLE_ADMIN)){
+        if(roles.stream().anyMatch(roleService.getRoleByName(Snippets.ROLE_ADMIN)::equals)){
                 User foundUser = userRepository.findByUsername(user.getUsername());
-                    foundUser.setRole(user.getRole());
+                foundUser.setRoles(user.getRoles());
                 return userRepository.save(foundUser);
         }
         return null;
@@ -202,8 +202,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User changeActiveUser(User user) {
-        Role role = userRepository.findByUsername(getUsernameLogin()).getRole();
-            if(role.getName().equals(Snippets.ROLE_ADMIN)){
+        List<Role> roles = userRepository.findByUsername(getUsernameLogin()).getRoles();
+
+            if(roles.stream().anyMatch(roleService.getRoleByName(Snippets.ROLE_ADMIN)::equals)){
                 User foundUser = userRepository.findByUsername(user.getUsername());
                 foundUser.setActive(user.getActive());
                 return userRepository.save(foundUser);

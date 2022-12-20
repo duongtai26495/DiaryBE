@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Configuration
 public class Database {
@@ -21,8 +22,8 @@ public class Database {
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
-                Role role_user = new Role(Snippets.ROLE_USER);
-                Role role_admin = new Role(Snippets.ROLE_ADMIN);
+                Role role_user = new Role(UUID.randomUUID().toString(),Snippets.ROLE_USER);
+                Role role_admin = new Role(UUID.randomUUID().toString(),Snippets.ROLE_ADMIN);
                 roleService.saveNewRole(role_user);
                 roleService.saveNewRole(role_admin);
                 

@@ -22,7 +22,7 @@ public class UserDTO {
 
     private int diaries_count = 0;
 
-    private Role role;
+    private List<Role> roles;
 
     private String profile_image;
 
@@ -37,12 +37,12 @@ public class UserDTO {
         this.profile_image = profile_image;
     }
 
-    public Role getRole() {
-        return role;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public String getId() {
