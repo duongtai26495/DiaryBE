@@ -43,7 +43,7 @@ public class DiaryController {
     @PostMapping("save")
     public ResponseEntity saveDiary(@RequestBody Diary diary){
         if(getUsernameLogin() != null){
-            diary.setAuthor(userService.getUserByUsername(getUsernameLogin()));
+            diary.setAuthor(userService.findByUsername(getUsernameLogin()));
             return  ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(Snippets.SUCCESS,Snippets.DIARY_CREATE_SUCCESS,diaryService.saveNewDiary(diary))
             );

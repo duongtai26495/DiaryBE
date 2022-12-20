@@ -1,6 +1,7 @@
 package com.duongtai.syndiary.services;
 
 import com.duongtai.syndiary.entities.User;
+import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,8 +14,6 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    User getUserByUsername(String username);
-
     User saveUser(User user);
 
     User getUserById(String id);
@@ -23,7 +22,6 @@ public interface UserService {
 
     User changeProfileImage(User user);
 
-    boolean updatePassword(String newPassword);
 
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 

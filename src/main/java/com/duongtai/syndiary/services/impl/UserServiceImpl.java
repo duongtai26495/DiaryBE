@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.duongtai.syndiary.configs.MyUserDetail.getUsernameLogin;
 import static com.duongtai.syndiary.configs.Snippets.EXPIRATION_TIME;
@@ -46,39 +49,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     private static final String ROLE_USER = Snippets.ROLE_USER;
+
     public UserServiceImpl() {
 
     }
 
-
     @Override
     public User findByUsername(String username) {
-    	User user = userRepository.findByUsername(username);
-    	if( user != null) {
-    		return user;
-    	}
-        return null;
+    	return userRepository.findByUsername(username);
     }
 
     @Override
     public User findByEmail(String email) {
-    	User user = userRepository.findByEmail(email);
-    	if( user != null) {
-    		return user;
-    	}
-        return null;
+    	return userRepository.findByEmail(email);
     }
 
-    @Override
-    public User getUserByUsername(String username) {
-        if (username.equals(getUsernameLogin()) && getUsernameLogin() != null){
-            User user = userRepository.findByUsername(username);
-            if(user!=null){
-                return user;
-            }
-        }
-		return null;
-    }
 
     @Override
     public synchronized User saveUser(User user) {
@@ -87,14 +72,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return null;
         }
         user.setId(UUID.randomUUID().toString());
-        Role default_role_user = roleService.getRoleByName(ROLE_USER);
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setActive(true);
         user.setJoined_at(sdf.format(date));
         user.setLast_edited(sdf.format(date));
-        user.setRole(default_role_user);
+        user.setRole(roleService.getRoleByName(ROLE_USER));
         
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -118,6 +102,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
         User getUser = userRepository.findByUsername(user.getUsername());
+
+        if(user.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            if (!user.getPassword().equals(getUser.getPassword())) {
+                getUser.setPassword(user.getPassword());
+            }
+        }
 
         if(user.getProfile_image() != null && !user.getProfile_image().equals(getUser.getProfile_image())){
             getUser.setProfile_image(user.getProfile_image());
@@ -147,37 +138,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public synchronized boolean updatePassword(String newPassword) {
-        User user = userRepository.findByUsername(getUsernameLogin());
-        if(user != null) {
-            String passwordEncode = passwordEncoder.encode(newPassword);
-            user.setPassword(passwordEncode);
-            Date date = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
-            user.setLast_edited(sdf.format(date));
-            userRepository.save(user);
-            return true;
-        }
-    return false;
-    }
-
-    @Override
     public synchronized void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
             try {
-//                tokenRepository.save(old_token);
                 String refresh_token = authorizationHeader.substring("Bearer ".length());
                 Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();
                 User user = userRepository.findByUsername(username);
+                List<Role> roles = new ArrayList<>();
+                roles.add(user.getRole());
                 String access_token = JWT.create()
                         .withSubject(user.getUsername())
                         .withIssuer(request.getRequestURL().toString())
                         .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                        .withClaim(Snippets.ROLES,roles.stream().map(Role::getName).collect(Collectors.toList()))
                         .sign(algorithm);
 
                 Map<String, String> tokens = new HashMap<>();
@@ -214,9 +191,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User changeRoleUser(User user) {
         Role role = userRepository.findByUsername(getUsernameLogin()).getRole();
-        if(role.getName().equals(Snippets.ROLE_ADMIN)){
+
+            if(role.getName().equals(Snippets.ROLE_ADMIN)){
                 User foundUser = userRepository.findByUsername(user.getUsername());
-                foundUser.setRole(user.getRole());
+                    foundUser.setRole(user.getRole());
                 return userRepository.save(foundUser);
         }
         return null;
@@ -225,11 +203,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User changeActiveUser(User user) {
         Role role = userRepository.findByUsername(getUsernameLogin()).getRole();
-        if(role.getName().equals(Snippets.ROLE_ADMIN)){
+            if(role.getName().equals(Snippets.ROLE_ADMIN)){
                 User foundUser = userRepository.findByUsername(user.getUsername());
                 foundUser.setActive(user.getActive());
                 return userRepository.save(foundUser);
-        }
+            }
         return null;
     }
 

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +42,7 @@ public class UserController {
 	private CategoryRepository categoryRepository;
     @GetMapping("profile")
     public ResponseEntity<ResponseObject> getUserByUsername(@RequestParam(name = "username") String username){
-    	User user = userService.getUserByUsername(username);
+    	User user = userService.findByUsername(username);
     	UserDTO userDTO = ConvertEntity.convertToDTO(user);
 		return ResponseEntity.status(HttpStatus.OK).body(
 				new ResponseObject(Snippets.SUCCESS, Snippets.USER_FOUND, userDTO));
@@ -71,18 +72,6 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
 				new ResponseObject(Snippets.FAILED,Snippets.USER_NOT_FOUND, null));
-    }
-
-    @PutMapping("update_password")
-    public ResponseEntity<ResponseObject> updatePasswordByUsername(@RequestBody User user){
-    	if(userService.updatePassword(user.getPassword())) {
-    		return ResponseEntity.status(HttpStatus.OK).body(
-        			new ResponseObject(Snippets.SUCCESS, Snippets.PASSWORD_UPDATED, null)
-        			);
-    	}
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-    			new ResponseObject(Snippets.FAILED, Snippets.HAVE_ERROR, null)
-    			);
     }
 
     @PostMapping("upload_image")
@@ -124,7 +113,7 @@ public class UserController {
 
 
     @GetMapping("refresh_token")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         userService.refreshToken(request,response);
     }
 
@@ -135,9 +124,7 @@ public class UserController {
 				&& user.getRole().getName().equals(Snippets.ROLE_ADMIN)) {
 			return diaryService.saveNewCategory(category);
 		}
-		else{
-			return null;
-		}
+	return null;
 	}
 
 }
