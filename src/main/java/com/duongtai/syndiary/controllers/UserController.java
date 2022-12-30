@@ -63,16 +63,27 @@ public class UserController {
 
     @PostMapping("register")
     public ResponseEntity<ResponseObject> createUser (@RequestBody User user){
-    	
-    	if(user != null){
-    		user = userService.saveUser(user);
-    		UserDTO userDTO = ConvertEntity.convertToDTO(user);
-			System.out.println("User "+userDTO.getUsername() +" created.");
-    		return ResponseEntity.status(HttpStatus.OK).body(
-    				new ResponseObject(Snippets.SUCCESS,Snippets.USER_CREATE_SUCCESSFULLY, userDTO));
-    	}
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-				new ResponseObject(Snippets.FAILED,Snippets.EMAIL_ALREADY_TAKEN +" or " + Snippets.USERNAME_ALREADY_TAKEN, null));
+
+    	if(	user.getFull_name().isEmpty() ||
+			user.getUsername().isEmpty() ||
+			user.getEmail().isEmpty() ||
+			user.getPassword().isEmpty() ||
+			user.getGender() < 0 ||
+			user.getGender() > 3) {
+			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+					new ResponseObject(Snippets.FAILED, Snippets.NOT_NULL, null));
+		}
+		if (userService.findByUsername(user.getUsername()) != null ||
+			userService.findByEmail(user.getEmail()) != null){
+			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+					new ResponseObject(Snippets.FAILED, Snippets.EMAIL_ALREADY_TAKEN + " or "+ Snippets.USERNAME_ALREADY_TAKEN, null));
+		}
+		user = userService.saveUser(user);
+		UserDTO userDTO = ConvertEntity.convertToDTO(user);
+		System.out.println("User "+userDTO.getUsername() +" created.");
+		return ResponseEntity.status(HttpStatus.OK).body(
+				new ResponseObject(Snippets.SUCCESS,Snippets.USER_CREATE_SUCCESSFULLY, userDTO));
+
     }
 
     @PutMapping("update")

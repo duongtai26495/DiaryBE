@@ -76,7 +76,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         message.setSubject(Snippets.ACCOUNT_CREATED_SUCCESS);
         message.setText(content);
         mailSender.getJavaMailSender().send(message);
-        System.out.println("Send mail success");
     }
 
     private String generateToken(String username, String email, String active_token){

@@ -8,6 +8,7 @@ public class Snippets {
     public static final String YOU_DONT_HAVE_PERMISSION = "You don't have permission!";
     public static final String SUCCESS = "SUCCESS";
     public static final String FAILED = "FAILED";
+    public static final String NOT_NULL = "User must be not null";
     public static final String EMAIL_ALREADY_TAKEN = "This email already taken!";
     public static final String USERNAME_ALREADY_TAKEN = "This username already taken!";
     public static final String USER_LOGGED_IN = "User logged in";
