@@ -42,6 +42,7 @@ public class User {
 
     private int gender;
 
+    @JsonIgnore
     public String active_token ;
     @Column(length = 1000)
     private String profile_image;

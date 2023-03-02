@@ -13,7 +13,7 @@ put : diary/update : access token, json diary (title, content, image_url, displa
 delete : diary/delete : access token, param id
 get : diary/author={username} 
 get : id={diary_id}
-get : sort(last_edited, created_at, A_Z, Z_A), page, size
+get : sort(last_edited_desc, created_at_asc, created_at_desc, title_a_z, title_z_a), page, size
 
 
 // Comment

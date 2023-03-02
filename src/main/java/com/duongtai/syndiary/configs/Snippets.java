@@ -60,15 +60,17 @@ public class Snippets {
     //authen
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    public static final String SECRET_CODE = "secret";
+    public static final String SECRET_CODE = "kai_spring_diary";
     public static final String ROLES = "roles";
     
     //sort
-    public static final String LAST_EDITED = "last_edited";
-    public static final String CREATED_AT = "created_at";
-    public static final String A_Z = "A_Z";
-    public static final String Z_A = "Z_A";
 
+    public static final String A_Z = "title_a_z";
+    public static final String Z_A = "title_z_a";
+    public static final String CREATED_AT_ASC = "created_at_asc";
+    public static final String CREATED_AT_DESC = "created_at_desc";
+    public static final String LAST_EDITED_DESC = "last_edited";
+    public static final String CREATED_AT = "created_at";
     public static final String TITLE = "title";
 
     //image

@@ -43,18 +43,18 @@ public class HomeController {
     }
 
     @GetMapping("")
-    public Page<Diary> getAllDiaryDisplayWithPagination(@RequestParam(defaultValue = Snippets.LAST_EDITED) String sort,
+    public Page<Diary> getAllDiaryDisplayWithPagination(@RequestParam(defaultValue = Snippets.LAST_EDITED_DESC) String sort,
                                                         @RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "20") int size)
     {
 
-        Sort sorted;
+        Sort sorted = Sort.by(Snippets.LAST_EDITED_DESC).descending();
         switch (sort){
-            case Snippets.LAST_EDITED:
-                sorted = Sort.by(Snippets.LAST_EDITED).descending();
-                break;
-            case Snippets.CREATED_AT:
+            case Snippets.CREATED_AT_ASC:
                 sorted = Sort.by(Snippets.CREATED_AT).ascending();
+                break;
+            case Snippets.CREATED_AT_DESC:
+                sorted = Sort.by(Snippets.CREATED_AT).descending();
                 break;
             case Snippets.A_Z:
                 sorted = Sort.by(Snippets.TITLE).ascending();
@@ -62,8 +62,6 @@ public class HomeController {
             case Snippets.Z_A:
                 sorted = Sort.by(Snippets.TITLE).descending();
                 break;
-            default:
-                sorted = Sort.by(Snippets.LAST_EDITED);
         }
         Pageable pageable = PageRequest.of(page,size,sorted);
 
