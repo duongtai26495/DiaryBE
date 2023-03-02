@@ -64,10 +64,12 @@ public class Snippets {
     public static final String ROLES = "roles";
     
     //sort
-    public static final String LAST_EDITED = "Last edited";
-    public static final String CREATED_AT = "Created at";
-    public static final String A_Z = "A -> Z";
-    public static final String Z_A = "Z -> A";
+    public static final String LAST_EDITED = "last_edited";
+    public static final String CREATED_AT = "created_at";
+    public static final String A_Z = "A_Z";
+    public static final String Z_A = "Z_A";
+
+    public static final String TITLE = "title";
 
     //image
     public static final String NONAME = "noname";
