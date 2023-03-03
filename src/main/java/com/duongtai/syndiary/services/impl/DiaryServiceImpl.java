@@ -43,7 +43,6 @@ public class DiaryServiceImpl implements DiaryService {
         SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
         diary.setCreated_at(sdf.format(date));
         diary.setLast_edited(sdf.format(date));
-        diary.setDisplay(true);
         return diaryRepository.save(diary);
     }
 
