@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.duongtai.syndiary.configs.Snippets.EXPIRATION_TIME;
+import static com.duongtai.syndiary.configs.Snippets.EXPIRATION_TIME_REFRESH;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -53,7 +54,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String refresh_token = JWT.create()
                 .withSubject(userDetail.getUsername())
                 .withIssuer(request.getRequestURL().toString())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME_REFRESH))
                 .sign(algorithm);
         Map<String, String> tokens = new HashMap<>();
         tokens.put(Snippets.ACCESS_TOKEN,access_token);

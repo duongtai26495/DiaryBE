@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         User doneUser = userRepository.save(user);
         userRepository.save(doneUser);
-        String url = "http://localhost:3000/active/key="+active_token;
+        String url = "http://localhost:3000/active/key/"+active_token;
         sendEmail(user.getEmail(), "You can click on this url: "+url+" to active account and login. Thank you");
         return doneUser;
     }
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
             try {
                 String refresh_token = authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                Algorithm algorithm = Algorithm.HMAC256(Snippets.SECRET_CODE.getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();

@@ -30,6 +30,8 @@ public class Snippets {
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final String ROLE_EXIST = "Create role %s failed, this role already exist!";
     public static final String CREATE_ROLE_SUCCESS = "The role %s create successfully";
+    public static final String ACCOUNT_ACTIVE_SUCCESS = "Account activate success";
+    public static final String ACCOUNT_ACTIVE_FAILED = "Account activate failed";
 
     //time
     public static final String TIME_PATTERN = "dd/MM/yy hh:mm:ss aa";
@@ -54,6 +56,7 @@ public class Snippets {
     //token
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final long EXPIRATION_TIME = 900_000;
+    public static final long EXPIRATION_TIME_REFRESH = 2_700_000;
     public static final String ACCESS_TOKEN = "access_token";
     public static final String REFRESH_TOKEN = "refresh_token";
 

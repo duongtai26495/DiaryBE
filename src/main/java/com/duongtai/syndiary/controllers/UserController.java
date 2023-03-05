@@ -151,14 +151,14 @@ public class UserController {
 	return null;
 	}
 
-	@GetMapping("active")
-	public ResponseEntity<ResponseObject> activeAccount (@RequestParam("code") String code){
+	@GetMapping("active/{code}")
+	public ResponseEntity<ResponseObject> activeAccount (@PathVariable("code") String code){
 		if(code != null){
 			User user = userService.findByActiveCode(code);
 
 			if(user == null || user.getActive()){
 				return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-						new ResponseObject(Snippets.FAILED, Snippets.ACCOUNT_CREATED_SUCCESS,null)
+						new ResponseObject(Snippets.FAILED, Snippets.ACCOUNT_ACTIVE_FAILED,null)
 				);
 			}
 
@@ -166,11 +166,11 @@ public class UserController {
 			userService.changeActiveUser(user);
 
 			return ResponseEntity.status(HttpStatus.OK).body(
-					new ResponseObject(Snippets.SUCCESS, Snippets.ACCOUNT_CREATED_SUCCESS,null)
+					new ResponseObject(Snippets.SUCCESS, Snippets.ACCOUNT_ACTIVE_SUCCESS,null)
 			);
 		}
 		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-				new ResponseObject(Snippets.FAILED, Snippets.ACCOUNT_CREATED_SUCCESS,null)
+				new ResponseObject(Snippets.FAILED, Snippets.ACCOUNT_ACTIVE_FAILED,null)
 		);
 	}
 }
