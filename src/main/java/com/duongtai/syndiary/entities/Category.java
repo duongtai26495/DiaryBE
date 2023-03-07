@@ -21,6 +21,8 @@ public class Category {
     @JsonIgnore
     private List<Diary> diaries = new ArrayList<>();
 
+    private String created_at;
+
     private boolean display;
 
     public Category() {
@@ -57,5 +59,13 @@ public class Category {
 
     public void setDisplay(boolean display) {
         this.display = display;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 }

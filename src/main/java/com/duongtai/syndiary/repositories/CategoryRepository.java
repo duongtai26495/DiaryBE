@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    @Query(value = "SELECT c FROM Category c WHERE c.display = true")
+    @Query(value = "SELECT c FROM Category c WHERE c.display = true ORDER BY c.created_at DESC")
     List<Category> loadAllCategory();
 
     @Query(value = "SELECT c FROM Category c WHERE c.name = :name")

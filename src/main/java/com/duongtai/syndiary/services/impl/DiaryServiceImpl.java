@@ -111,6 +111,9 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     public Category saveNewCategory(Category category) {
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat(Snippets.TIME_PATTERN);
+            category.setCreated_at(sdf.format(date));
             category.setId(UUID.randomUUID().toString());
             category.setDisplay(true);
             return categoryRepository.save(category);

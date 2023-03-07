@@ -19,6 +19,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,8 +54,8 @@ public class UserController {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
-    @GetMapping("profile")
-    public ResponseEntity<ResponseObject> getUserByUsername(@RequestParam(name = "username") String username){
+    @GetMapping("profile/{username}")
+    public ResponseEntity<ResponseObject> getUserByUsername(@PathVariable(name = "username") String username){
     	User user = userService.findByUsername(username);
     	UserDTO userDTO = ConvertEntity.convertToDTO(user);
 		return ResponseEntity.status(HttpStatus.OK).body(
@@ -172,5 +173,10 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
 				new ResponseObject(Snippets.FAILED, Snippets.ACCOUNT_ACTIVE_FAILED,null)
 		);
+	}
+
+	@GetMapping("check_active")
+	public ResponseEntity<ResponseObject> check_active () {
+		return null;
 	}
 }

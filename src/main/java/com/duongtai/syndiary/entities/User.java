@@ -4,13 +4,14 @@ package com.duongtai.syndiary.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "User")
-public class User {
+public class User{
 	
 	enum GENDER {
 		MALE, FEMALE, UNKNOWN;
@@ -178,4 +179,6 @@ public class User {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+
 }
